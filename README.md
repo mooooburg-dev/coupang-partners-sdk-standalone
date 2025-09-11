@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-쿠팡 파트너스 API를 쉽게 사용할 수 있도록 도와주는 공식 TypeScript/JavaScript SDK입니다.
+쿠팡 파트너스 API를 쉽게 사용할 수 있도록 도와주는 TypeScript/JavaScript SDK입니다.
 
 ## ✨ 특징
 
@@ -19,11 +19,11 @@
 ## 📦 설치
 
 ```bash
-npm install @coupang-partners/sdk
+npm install coupang-partners-sdk-standalone
 ```
 
 ```bash
-yarn add @coupang-partners/sdk
+yarn add coupang-partners-sdk-standalone
 ```
 
 ## 🚀 빠른 시작
@@ -31,7 +31,7 @@ yarn add @coupang-partners/sdk
 ### 기본 설정
 
 ```typescript
-import { CoupangPartnersClient } from '@coupang-partners/sdk';
+import { CoupangPartnersClient } from 'coupang-partners-sdk-standalone';
 
 const client = new CoupangPartnersClient({
   accessKey: 'your-access-key',
@@ -246,9 +246,8 @@ npx ts-node examples/advanced-filtering.ts
 
 ## 📞 지원
 
-- 🐛 버그 리포트: [GitHub Issues](https://github.com/coupang-partners/coupang-partners-sdk/issues)
-- 💡 기능 요청: [GitHub Discussions](https://github.com/coupang-partners/coupang-partners-sdk/discussions)
-- 📧 문의: sdk@coupang.com
+- 🐛 버그 리포트: [GitHub Issues](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues)
+- 💡 기능 요청: [GitHub Discussions](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/discussions)
 
 ## 📜 라이선스
 
@@ -257,9 +256,9 @@ npx ts-node examples/advanced-filtering.ts
 ---
 
 <div align="center">
-  <p>Made with ❤️ by Coupang Partners SDK Team</p>
+  <p>Made with ❤️ by mooooburg-dev</p>
   <p>
-    <a href="https://github.com/coupang-partners/coupang-partners-sdk">⭐ Star on GitHub</a> |
-    <a href="https://www.npmjs.com/package/@coupang-partners/sdk">📦 NPM Package</a>
+    <a href="https://github.com/mooooburg-dev/coupang-partners-sdk-standalone">⭐ Star on GitHub</a> |
+    <a href="https://www.npmjs.com/package/coupang-partners-sdk-standalone">📦 NPM Package</a>
   </p>
 </div>

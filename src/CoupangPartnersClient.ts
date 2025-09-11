@@ -9,7 +9,7 @@ import { logger, LogLevel } from './utils/Logger';
  * 
  * @example
  * ```typescript
- * import { CoupangPartnersClient } from '@coupang-partners/sdk';
+ * import { CoupangPartnersClient } from 'coupang-partners-sdk-standalone';
  * 
  * const client = new CoupangPartnersClient({
  *   accessKey: 'your-access-key',

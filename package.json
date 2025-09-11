@@ -1,7 +1,7 @@
 {
-  "name": "@coupang-partners/sdk",
+  "name": "coupang-partners-sdk-standalone",
   "version": "1.0.0",
-  "description": "Official Coupang Partners API SDK for Node.js and TypeScript",
+  "description": "Coupang Partners API SDK for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
@@ -30,18 +30,18 @@
     "ecommerce"
   ],
   "author": {
-    "name": "Coupang Partners SDK Team",
-    "email": "sdk@coupang.com"
+    "name": "mooooburg-dev",
+    "url": "https://github.com/mooooburg-dev"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coupang-partners/coupang-partners-sdk.git"
+    "url": "git+https://github.com/mooooburg-dev/coupang-partners-sdk-standalone.git"
   },
   "bugs": {
-    "url": "https://github.com/coupang-partners/coupang-partners-sdk/issues"
+    "url": "https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues"
   },
-  "homepage": "https://github.com/coupang-partners/coupang-partners-sdk#readme",
+  "homepage": "https://github.com/mooooburg-dev/coupang-partners-sdk-standalone#readme",
   "dependencies": {
     "axios": "^1.6.2",
     "moment": "^2.29.4"

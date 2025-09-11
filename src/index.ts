@@ -1,7 +1,7 @@
 /**
  * Coupang Partners API SDK
  * 
- * @author Coupang Partners SDK Team
+ * @author mooooburg-dev
  * @version 1.0.0
  * @license MIT
  */
