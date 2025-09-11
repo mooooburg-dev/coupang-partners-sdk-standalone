@@ -2,7 +2,7 @@
  * Advanced filtering example for Coupang Partners SDK
  */
 
-import { CoupangPartnersClient } from '../src';
+import { CoupangPartnersClient } from 'coupang-partners-sdk-standalone';
 
 async function advancedFilteringExample() {
   const client = new CoupangPartnersClient({

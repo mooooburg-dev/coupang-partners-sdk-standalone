@@ -4,7 +4,7 @@
  * Run with: npm run example
  */
 
-import { CoupangPartnersClient } from '../src';
+import { CoupangPartnersClient } from 'coupang-partners-sdk-standalone';
 
 async function main() {
   // Replace with your actual credentials
