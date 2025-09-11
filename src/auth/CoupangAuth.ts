@@ -16,7 +16,7 @@ export class CoupangAuth {
 
   /**
    * Generate HMAC SHA256 signature for Coupang Partners API
-   * 
+   *
    * @param method HTTP method (GET, POST, etc.)
    * @param url Request URL path with query parameters
    * @returns Authorization header value
@@ -28,10 +28,10 @@ export class CoupangAuth {
 
       // Generate UTC timestamp in Coupang format
       const datetime = moment.utc().format('YYMMDD[T]HHmmss[Z]');
-      
+
       // Create message for signing
       const message = datetime + method.toUpperCase() + path + query;
-      
+
       logger.debug(`Generating HMAC signature for: ${method} ${path}`);
       logger.debug(`Message to sign: ${message}`);
 
@@ -51,20 +51,20 @@ export class CoupangAuth {
 
   /**
    * Get authorization header for API requests
-   * 
+   *
    * @param method HTTP method
    * @param url Request URL
    * @returns Object containing Authorization header
    */
   getAuthorizationHeader(method: string, url: string): { Authorization: string } {
     return {
-      Authorization: this.generateHmacSignature(method, url)
+      Authorization: this.generateHmacSignature(method, url),
     };
   }
 
   /**
    * Update credentials (useful for credential rotation)
-   * 
+   *
    * @param credentials New credentials
    */
   updateCredentials(credentials: CoupangCredentials): void {
@@ -75,7 +75,7 @@ export class CoupangAuth {
 
   /**
    * Validate credentials format
-   * 
+   *
    * @private
    */
   private validateCredentials(credentials: CoupangCredentials): void {

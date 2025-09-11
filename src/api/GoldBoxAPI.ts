@@ -11,7 +11,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Get all GoldBox products with optional filtering
-   * 
+   *
    * @param options Search and filter options
    * @returns Promise of Product array
    */
@@ -24,7 +24,7 @@ export class GoldBoxAPI extends BaseAPI {
 
     try {
       logger.info('Fetching GoldBox products from API');
-      
+
       const response = await this.request<GoldBoxResponse>({
         method: 'GET',
         url: '/v2/providers/affiliate_open_api/apis/openapi/v1/products/goldbox',
@@ -56,7 +56,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Get products by category
-   * 
+   *
    * @param category Category name to filter by
    * @returns Promise of Product array
    */
@@ -66,7 +66,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Get products by minimum discount percentage
-   * 
+   *
    * @param minDiscount Minimum discount percentage
    * @returns Promise of Product array
    */
@@ -76,7 +76,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Get products within price range
-   * 
+   *
    * @param minPrice Minimum price
    * @param maxPrice Maximum price
    * @returns Promise of Product array
@@ -87,7 +87,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Get top-rated products
-   * 
+   *
    * @param minRating Minimum rating threshold
    * @param limit Number of products to return
    * @returns Promise of Product array
@@ -102,7 +102,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Get products with high discounts
-   * 
+   *
    * @param minDiscount Minimum discount percentage (default: 50%)
    * @param limit Number of products to return
    * @returns Promise of Product array
@@ -137,7 +137,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Transform raw API data to Product objects
-   * 
+   *
    * @private
    */
   private transformProducts(rawData: any[]): Product[] {
@@ -175,7 +175,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Enhance products with additional computed properties
-   * 
+   *
    * @private
    */
   private enhanceProducts(products: Product[]): Product[] {
@@ -210,14 +210,14 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Generate category-specific special notes
-   * 
+   *
    * @private
    */
   private generateSpecialNote(category: string): string {
     if (!category) return '';
 
     const categoryLower = category.toLowerCase();
-    
+
     if (categoryLower.includes('과일')) return '신선과일';
     if (categoryLower.includes('채소')) return '신선채소';
     if (categoryLower.includes('육류') || categoryLower.includes('고기')) return '프리미엄';
@@ -225,36 +225,36 @@ export class GoldBoxAPI extends BaseAPI {
     if (categoryLower.includes('유제품') || categoryLower.includes('우유')) return '신선보관';
     if (categoryLower.includes('음료') || categoryLower.includes('음료수')) return '시원하게';
     if (categoryLower.includes('냉동')) return '냉동식품';
-    
+
     return '';
   }
 
   /**
    * Generate realistic product rating
-   * 
+   *
    * @private
    */
   private generateRealisticRating(): number {
     // Generate weighted random rating (3-5 range, bias toward 4-4.5)
     const weights = [0.1, 0.2, 0.4, 0.25, 0.05]; // for 3.0, 3.5, 4.0, 4.5, 5.0
     const ratings = [3.0, 3.5, 4.0, 4.5, 5.0];
-    
+
     const random = Math.random();
     let cumulative = 0;
-    
+
     for (let i = 0; i < weights.length; i++) {
       cumulative += weights[i];
       if (random < cumulative) {
         return ratings[i];
       }
     }
-    
+
     return 4.0; // fallback
   }
 
   /**
    * Filter products based on search options
-   * 
+   *
    * @private
    */
   private filterProducts(products: Product[], options: ProductSearchOptions): Product[] {
@@ -262,33 +262,36 @@ export class GoldBoxAPI extends BaseAPI {
 
     if (options.category) {
       const categoryLower = options.category.toLowerCase();
-      filtered = filtered.filter(product => 
-        product.category?.toLowerCase().includes(categoryLower) ||
-        product.productName.toLowerCase().includes(categoryLower)
+      filtered = filtered.filter(
+        product =>
+          product.category?.toLowerCase().includes(categoryLower) ||
+          product.productName.toLowerCase().includes(categoryLower)
       );
     }
 
     if (options.minDiscount !== undefined) {
-      filtered = filtered.filter(product => 
-        product.discount !== null && product.discount !== undefined && product.discount >= options.minDiscount!
+      filtered = filtered.filter(
+        product =>
+          product.discount !== null &&
+          product.discount !== undefined &&
+          product.discount >= options.minDiscount!
       );
     }
 
     if (options.maxPrice !== undefined) {
-      filtered = filtered.filter(product => 
-        product.productPrice <= options.maxPrice!
-      );
+      filtered = filtered.filter(product => product.productPrice <= options.maxPrice!);
     }
 
     if (options.minPrice !== undefined) {
-      filtered = filtered.filter(product => 
-        product.productPrice >= options.minPrice!
-      );
+      filtered = filtered.filter(product => product.productPrice >= options.minPrice!);
     }
 
     if (options.minRating !== undefined) {
-      filtered = filtered.filter(product => 
-        product.rating !== null && product.rating !== undefined && product.rating >= options.minRating!
+      filtered = filtered.filter(
+        product =>
+          product.rating !== null &&
+          product.rating !== undefined &&
+          product.rating >= options.minRating!
       );
     }
 
@@ -301,7 +304,7 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Check if cache should be used
-   * 
+   *
    * @private
    */
   private shouldUseCache(options: ProductSearchOptions): boolean {
@@ -310,32 +313,34 @@ export class GoldBoxAPI extends BaseAPI {
 
   /**
    * Check if request has no filters (can use cache)
-   * 
+   *
    * @private
    */
   private isUnfilteredRequest(options: ProductSearchOptions): boolean {
-    return !options.category && 
-           options.minDiscount === undefined && 
-           options.maxPrice === undefined && 
-           options.minPrice === undefined && 
-           options.minRating === undefined && 
-           options.limit === undefined;
+    return (
+      !options.category &&
+      options.minDiscount === undefined &&
+      options.maxPrice === undefined &&
+      options.minPrice === undefined &&
+      options.minRating === undefined &&
+      options.limit === undefined
+    );
   }
 
   /**
    * Check if cache is still valid
-   * 
+   *
    * @private
    */
   private isCacheValid(): boolean {
     if (!this.lastCacheUpdate) return false;
     const now = new Date();
-    return (now.getTime() - this.lastCacheUpdate.getTime()) < this.config.cacheDuration;
+    return now.getTime() - this.lastCacheUpdate.getTime() < this.config.cacheDuration;
   }
 
   /**
    * Update cache with new data
-   * 
+   *
    * @private
    */
   private updateCache(products: Product[]): void {

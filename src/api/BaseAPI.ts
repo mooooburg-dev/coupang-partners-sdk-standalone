@@ -29,7 +29,7 @@ export class BaseAPI {
 
   /**
    * Initialize axios HTTP client with interceptors
-   * 
+   *
    * @private
    */
   private initializeHttpClient(): void {
@@ -38,19 +38,19 @@ export class BaseAPI {
       timeout: this.config.timeout,
       headers: {
         'User-Agent': 'CoupangPartnersSDK/1.0.0',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     });
 
     // Request interceptor for authentication
     this.httpClient.interceptors.request.use(
-      (config) => {
+      config => {
         const authHeaders = this.auth.getAuthorizationHeader(
           config.method?.toUpperCase() || 'GET',
           config.url || ''
         );
-        
+
         Object.assign(config.headers || {}, authHeaders);
 
         if (this.config.debug) {
@@ -60,7 +60,7 @@ export class BaseAPI {
 
         return config;
       },
-      (error) => {
+      error => {
         logger.error('Request interceptor error:', error);
         return Promise.reject(error);
       }
@@ -68,15 +68,15 @@ export class BaseAPI {
 
     // Response interceptor for error handling
     this.httpClient.interceptors.response.use(
-      (response) => {
+      response => {
         if (this.config.debug) {
           logger.debug(`Response received: ${response.status} ${response.statusText}`);
         }
         return response;
       },
-      async (error) => {
+      async error => {
         const apiError = this.createApiError(error);
-        
+
         // Retry logic for certain errors
         if (this.shouldRetry(error) && error.config && !error.config.__retryCount) {
           return this.retryRequest(error);
@@ -90,7 +90,7 @@ export class BaseAPI {
 
   /**
    * Make HTTP request with proper error handling
-   * 
+   *
    * @protected
    */
   protected async request<T>(config: AxiosRequestConfig): Promise<T> {
@@ -105,18 +105,18 @@ export class BaseAPI {
 
   /**
    * Create standardized API error
-   * 
+   *
    * @private
    */
   private createApiError(error: any): ApiError {
     const apiError = new Error() as ApiError;
-    
+
     if (error.response) {
       // Server responded with error status
       apiError.statusCode = error.response.status;
       apiError.message = this.getErrorMessage(error.response.status);
       apiError.details = error.response.data;
-      
+
       switch (error.response.status) {
         case 401:
           apiError.code = 'AUTHENTICATION_FAILED';
@@ -148,7 +148,7 @@ export class BaseAPI {
 
   /**
    * Get user-friendly error message
-   * 
+   *
    * @private
    */
   private getErrorMessage(statusCode: number): string {
@@ -170,36 +170,36 @@ export class BaseAPI {
 
   /**
    * Check if error should be retried
-   * 
+   *
    * @private
    */
   private shouldRetry(error: any): boolean {
     if (!error.response) return true; // Network errors
-    
+
     const retryableStatuses = [408, 429, 500, 502, 503, 504];
     return retryableStatuses.includes(error.response.status);
   }
 
   /**
    * Retry failed request
-   * 
+   *
    * @private
    */
   private async retryRequest(error: any): Promise<any> {
     const config = error.config;
     config.__retryCount = config.__retryCount || 0;
-    
+
     if (config.__retryCount >= this.config.retryAttempts) {
       throw error;
     }
-    
+
     config.__retryCount += 1;
-    
+
     logger.warn(`Retrying request (${config.__retryCount}/${this.config.retryAttempts})`);
-    
+
     // Wait before retry
     await new Promise(resolve => setTimeout(resolve, this.config.retryDelay * config.__retryCount));
-    
+
     return this.httpClient(config);
   }
 
@@ -208,15 +208,15 @@ export class BaseAPI {
    */
   updateConfig(newConfig: Partial<SDKConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    
+
     if (newConfig.credentials) {
       this.auth.updateCredentials(newConfig.credentials);
     }
-    
+
     if (newConfig.baseUrl || newConfig.timeout) {
       this.initializeHttpClient();
     }
-    
+
     logger.info('API configuration updated');
   }
 }
