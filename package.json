@@ -1,7 +1,7 @@
 {
   "name": "coupang-partners-sdk-standalone",
   "version": "1.0.0",
-  "description": "Coupang Partners API SDK for Node.js and TypeScript",
+  "description": "Coupang Partners Authentication Library for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
@@ -22,12 +22,11 @@
     "coupang",
     "partners",
     "affiliate",
-    "api",
     "sdk",
     "typescript",
     "nodejs",
-    "goldbox",
-    "ecommerce"
+    "authentication",
+    "hmac"
   ],
   "author": {
     "name": "mooooburg-dev",
@@ -42,10 +41,7 @@
     "url": "https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues"
   },
   "homepage": "https://github.com/mooooburg-dev/coupang-partners-sdk-standalone#readme",
-  "dependencies": {
-    "axios": "^1.6.2",
-    "moment": "^2.29.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^29.5.8",
     "@types/node": "^20.9.0",
