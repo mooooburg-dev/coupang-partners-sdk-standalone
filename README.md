@@ -342,14 +342,20 @@ npm run prepublishOnly
 
 ## 🔄 버전 히스토리
 
+### v1.1.0
+
+- ✨ CoupangPL API 추가
+- 🛡️ 향상된 에러 처리 (HTML 응답, JSON 파싱 에러)
+- 🧪 테스트 UI 제공
+- 📚 README 전면 개편
+- 📄 예제 파일 추가
+
 ### v1.0.0
 
 - ✨ 상품 검색 API 지원
 - ✨ GoldBox API 지원
-- ✨ CoupangPL API 지원
-- 🛡️ 향상된 에러 처리 (HTML 응답, JSON 파싱 에러)
-- 🧪 테스트 UI 제공
 - 📘 완전한 TypeScript 지원
+- 🔐 HMAC SHA256 CEA 인증
 
 ## 📞 지원
 
