@@ -1,13 +1,13 @@
 /**
- * Basic usage example for Coupang Partners Authentication Library
+ * Basic usage example for Coupang Partners SDK
  *
  * Run with: npm run example
  */
 
-import { CoupangPartnersClient, CoupangAuth } from 'coupang-partners-sdk-standalone';
+import { CoupangPartnersClient, CoupangAuth } from '../src/index';
 
-function main() {
-  console.log('🚀 Coupang Partners Authentication Library Example');
+async function main() {
+  console.log('🚀 Coupang Partners SDK Example');
   console.log('===============================================\n');
 
   try {
@@ -70,11 +70,34 @@ function main() {
     console.log(`   Updated Timeout: ${updatedConfig.timeout}ms`);
     console.log(`   Updated Debug Mode: ${updatedConfig.debug}\n`);
 
-    console.log('5. SDK Version Information...');
+    console.log('5. Products API - Search Products...');
+    try {
+      const searchResponse = await client.searchProducts('컴퓨터', {
+        limit: 5,
+        imageSize: '230x230',
+        srpLinkOnly: false
+      });
+
+      console.log(`   Search Response Code: ${searchResponse.rCode}`);
+      console.log(`   Message: ${searchResponse.rMessage}`);
+
+      if (searchResponse.data && searchResponse.data.productData) {
+        console.log(`   Found ${searchResponse.data.productData.length} products:`);
+        searchResponse.data.productData.slice(0, 3).forEach((product: any, index: number) => {
+          console.log(`     ${index + 1}. ${product.productName} - ₩${product.productPrice.toLocaleString()}`);
+        });
+      }
+      console.log();
+    } catch (apiError) {
+      console.log('   ⚠️  Products API call failed (expected with demo credentials)');
+      console.log(`   Error: ${apiError instanceof Error ? apiError.message : 'Unknown error'}\n`);
+    }
+
+    console.log('6. SDK Version Information...');
     console.log(`   Version: ${client.getVersion()}\n`);
 
-    console.log('✅ Authentication library example completed successfully!');
-    console.log('\n💡 You can now use these signatures in your HTTP requests to Coupang Partners API');
+    console.log('✅ SDK example completed successfully!');
+    console.log('\n💡 Replace credentials with real ones to test actual API calls');
 
   } catch (error) {
     console.error('❌ Error occurred:', error);
