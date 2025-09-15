@@ -45,3 +45,74 @@ export interface ProductSearchOptions {
   imageSize?: '72x72' | '120x120' | '230x230' | '300x300' | '600x600';
   srpLinkOnly?: boolean;
 }
+
+/**
+ * GoldBox API request parameters
+ */
+export interface GoldBoxParams {
+  subId?: string;
+  imageSize?: '72x72' | '120x120' | '230x230' | '300x300' | '600x600';
+}
+
+/**
+ * GoldBox product data structure
+ */
+export interface GoldBoxProduct {
+  categoryName: string;
+  isRocket: boolean;
+  isFreeShipping: boolean;
+  productId: number;
+  productImage: string;
+  productName: string;
+  productPrice: number;
+  productUrl: string;
+}
+
+/**
+ * GoldBox API response structure
+ */
+export interface GoldBoxResponse {
+  rCode: string;
+  rMessage: string;
+  data?: GoldBoxProduct[];
+}
+
+/**
+ * GoldBox options for client configuration
+ */
+export interface GoldBoxOptions {
+  subId?: string;
+  imageSize?: '72x72' | '120x120' | '230x230' | '300x300' | '600x600';
+}
+
+/**
+ * CoupangPL API request parameters
+ */
+export interface CoupangPLParams {
+  limit?: number;
+  subId?: string;
+  imageSize?: '230x230' | '300x300' | '512x512';
+}
+
+/**
+ * CoupangPL product data structure
+ */
+export interface CoupangPLProduct {
+  categoryName: string;
+  isRocket: boolean;
+  isFreeShipping: boolean;
+  productId: number;
+  productImage: string;
+  productName: string;
+  productPrice: number;
+  productUrl: string;
+}
+
+/**
+ * CoupangPL API response structure
+ */
+export interface CoupangPLResponse {
+  rCode: string;
+  rMessage: string;
+  data?: CoupangPLProduct[];
+}
