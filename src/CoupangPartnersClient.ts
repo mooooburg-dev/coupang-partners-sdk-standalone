@@ -1,6 +1,8 @@
 import { CoupangAuth } from './auth/CoupangAuth';
 import { CoupangCredentials, SDKConfig } from './types/Config';
 import { logger, LogLevel } from './utils/Logger';
+import { ProductsAPI } from './api/ProductsAPI';
+import { ProductSearchOptions, ProductSearchResponse } from './types/Product';
 
 /**
  * Main Coupang Partners SDK Client
@@ -20,6 +22,7 @@ import { logger, LogLevel } from './utils/Logger';
 export class CoupangPartnersClient {
   private auth: CoupangAuth;
   private config: Required<SDKConfig>;
+  private productsAPI: ProductsAPI;
 
   constructor(credentials: CoupangCredentials, config: Partial<SDKConfig> = {}) {
     // Merge with default config
@@ -36,6 +39,7 @@ export class CoupangPartnersClient {
 
     // Initialize components
     this.auth = new CoupangAuth(credentials);
+    this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
 
     logger.info('CoupangPartnersClient initialized successfully');
   }
@@ -78,6 +82,11 @@ export class CoupangPartnersClient {
 
     if (newConfig.credentials) {
       this.auth.updateCredentials(newConfig.credentials);
+      this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
+    }
+
+    if (newConfig.timeout) {
+      this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
     }
 
     logger.info('SDK configuration updated');
@@ -101,6 +110,32 @@ export class CoupangPartnersClient {
    */
   getVersion(): string {
     return '1.0.0';
+  }
+
+  /**
+   * Search products by keyword
+   *
+   * @param keyword Search keyword
+   * @param options Search options (limit, imageSize, etc.)
+   * @returns Promise<ProductSearchResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.searchProducts('fashion', {
+   *   limit: 10,
+   *   imageSize: '230x230'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Found products:', response.data?.productData);
+   * }
+   * ```
+   */
+  async searchProducts(
+    keyword: string,
+    options?: ProductSearchOptions
+  ): Promise<ProductSearchResponse> {
+    return this.productsAPI.search(keyword, options);
   }
 
   /**

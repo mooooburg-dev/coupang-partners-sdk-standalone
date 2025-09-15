@@ -14,6 +14,12 @@ export { CoupangAuth } from './auth/CoupangAuth';
 
 // Type exports
 export type { CoupangCredentials, SDKConfig } from './types/Config';
+export type {
+  Product,
+  ProductSearchParams,
+  ProductSearchResponse,
+  ProductSearchOptions,
+} from './types/Product';
 
 // Utility exports
 export { Logger, LogLevel } from './utils/Logger';
