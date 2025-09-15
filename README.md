@@ -1,6 +1,6 @@
 # Coupang Partners SDK 🛒
 
-[![npm version](https://badge.fury.io/js/%40coupang-partners%2Fsdk.svg)](https://badge.fury.io/js/%40coupang-partners%2Fsdk)
+[![npm version](https://badge.fury.io/js/coupang-partners-sdk-standalone.svg)](https://badge.fury.io/js/coupang-partners-sdk-standalone)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
@@ -8,13 +8,13 @@
 
 ## ✨ 특징
 
-- 🔐 **자동 인증**: HMAC SHA256 서명 자동 생성
+- 🔐 **자동 인증**: HMAC SHA256 CEA 서명 자동 생성
 - 📘 **TypeScript 지원**: 완전한 타입 안정성 제공
-- 🚀 **스마트 캐싱**: 30분 캐시로 API 호출 최적화
-- 🛡️ **에러 핸들링**: 401, 429 등 상태코드별 자동 처리
-- 🔍 **고급 필터링**: 카테고리, 할인율, 가격별 필터링 지원
-- 🔄 **자동 재시도**: 네트워크 오류 시 자동 재시도
-- 📊 **상세 로깅**: 디버그 모드 지원
+- 🚀 **다양한 API 지원**: 상품검색, GoldBox, CoupangPL API
+- 🛡️ **향상된 에러 핸들링**: HTTP 에러, JSON 파싱 에러 자동 처리
+- 🔄 **자동 재시도**: 네트워크 오류 시 자동 재시도 로직
+- 📊 **상세 로깅**: 구조화된 로깅 시스템과 디버그 모드
+- 🧪 **테스트 UI**: 실시간 API 테스트를 위한 웹 인터페이스 제공
 
 ## 📦 설치
 
@@ -35,114 +35,93 @@ import { CoupangPartnersClient } from 'coupang-partners-sdk-standalone';
 
 const client = new CoupangPartnersClient({
   accessKey: 'your-access-key',
-  secretKey: 'your-secret-key'
+  secretKey: 'your-secret-key',
 });
+```
+
+### 상품 검색
+
+```typescript
+// 키워드로 상품 검색
+const searchResult = await client.searchProducts('아이폰', {
+  limit: 10,
+  imageSize: '230x230',
+});
+
+if (searchResult.rCode === '0') {
+  const products = searchResult.data?.productData || [];
+  console.log(`Found ${products.length} products`);
+
+  products.forEach(product => {
+    console.log(`${product.productName} - ₩${product.productPrice.toLocaleString()}`);
+  });
+}
 ```
 
 ### GoldBox 상품 조회
 
 ```typescript
-// 모든 GoldBox 상품 조회
-const products = await client.getGoldBoxProducts();
-console.log(`Found ${products.length} products`);
+// GoldBox 특가 상품 조회
+const goldboxResult = await client.goldbox({
+  subId: 'my-tracking-id',
+  imageSize: '300x300',
+});
 
-// 첫 번째 상품 정보
-if (products.length > 0) {
-  const product = products[0];
-  console.log(`${product.productName} - ${product.productPrice}원`);
+if (goldboxResult.rCode === '0') {
+  const products = goldboxResult.data || [];
+  console.log(`Found ${products.length} GoldBox products`);
+}
+```
+
+### CoupangPL 상품 조회
+
+```typescript
+// CoupangPL 상품 조회
+const coupangplResult = await client.coupangPL({
+  limit: 50,
+  imageSize: '512x512',
+  subId: 'my-tracking-id',
+});
+
+if (coupangplResult.rCode === '0') {
+  const products = coupangplResult.data || [];
+  console.log(`Found ${products.length} CoupangPL products`);
 }
 ```
 
 ## 📚 사용 예제
 
-### 필터링 옵션
+### 필터링과 함께 GoldBox 사용
 
 ```typescript
-// 복합 조건으로 상품 검색
-const filteredProducts = await client.getGoldBoxProducts({
-  category: '전자제품',        // 카테고리 필터
-  minDiscount: 30,            // 최소 30% 할인
-  maxPrice: 100000,           // 최대 10만원
-  minRating: 4.0,             // 최소 평점 4.0
-  limit: 20                   // 최대 20개 결과
-});
+// 클라이언트 사이드 필터링 적용
+const filteredResult = await client.goldboxWithFilters(
+  {
+    imageSize: '230x230',
+  },
+  {
+    minPrice: 10000, // 최소 1만원
+    maxPrice: 100000, // 최대 10만원
+    categories: ['패션'], // 패션 카테고리만
+    rocketOnly: true, // 로켓배송만
+    freeShippingOnly: false, // 무료배송 조건 없음
+  }
+);
 ```
 
-### 카테고리별 조회
+### 고급 설정 옵션
 
 ```typescript
-// 과일 카테고리 상품
-const fruits = await client.getProductsByCategory('과일');
-
-// 전자제품 카테고리 상품
-const electronics = await client.getProductsByCategory('전자제품');
-```
-
-### 할인 상품 조회
-
-```typescript
-// 50% 이상 할인 상품 (상위 10개)
-const deals = await client.getHighDiscountProducts(50, 10);
-
-// 특정 할인율 이상 상품
-const discounted = await client.getProductsByDiscount(30);
-```
-
-### 가격대별 조회
-
-```typescript
-// 1만원~5만원 사이 상품
-const affordable = await client.getProductsByPriceRange(10000, 50000);
-```
-
-### 평점 높은 상품
-
-```typescript
-// 평점 4.5 이상 상품 (상위 15개)
-const topRated = await client.getTopRatedProducts(4.5, 15);
-```
-
-## 🛠️ 고급 사용법
-
-### 설정 옵션
-
-```typescript
-const client = new CoupangPartnersClient({
-  accessKey: 'your-access-key',
-  secretKey: 'your-secret-key'
-}, {
-  baseUrl: 'https://api-gateway.coupang.com',  // API 기본 URL
-  timeout: 15000,                              // 요청 타임아웃 (15초)
-  cacheDuration: 30 * 60 * 1000,              // 캐시 유지시간 (30분)
-  retryAttempts: 3,                            // 재시도 횟수
-  retryDelay: 1000,                            // 재시도 간격 (1초)
-  debug: true                                  // 디버그 모드
-});
-```
-
-### 캐시 관리
-
-```typescript
-// 캐시 정보 확인
-const cacheInfo = client.getCacheInfo();
-console.log(`Cache size: ${cacheInfo.size} products`);
-console.log(`Last update: ${cacheInfo.lastUpdate}`);
-console.log(`Is valid: ${cacheInfo.isValid}`);
-
-// 캐시 삭제 (강제로 새 데이터 가져오기)
-client.clearCache();
-```
-
-### 헬스 체크
-
-```typescript
-// SDK 상태 확인
-const isHealthy = await client.healthCheck();
-if (isHealthy) {
-  console.log('✅ SDK is ready to use');
-} else {
-  console.log('❌ Please check your credentials');
-}
+const client = new CoupangPartnersClient(
+  {
+    accessKey: 'your-access-key',
+    secretKey: 'your-secret-key',
+  },
+  {
+    timeout: 15000, // 15초 타임아웃
+    debug: true, // 디버그 모드 활성화
+  }
+);
 ```
 
 ### 설정 업데이트
@@ -151,65 +130,162 @@ if (isHealthy) {
 // 런타임에서 설정 변경
 client.updateConfig({
   timeout: 20000,
-  debug: false
+  debug: false,
+});
+
+// 새 API 키로 업데이트
+client.updateConfig({
+  credentials: {
+    accessKey: 'new-access-key',
+    secretKey: 'new-secret-key',
+  },
 });
 ```
+
+## 🧪 테스트 UI
+
+SDK와 함께 제공되는 테스트 UI를 사용하여 실시간으로 API를 테스트할 수 있습니다.
+
+### 테스트 UI 실행
+
+```bash
+# 테스트 프로젝트 클론 및 설정
+git clone https://github.com/mooooburg-dev/coupang-partners-sdk-standalone.git
+cd using-cp-sdk-test
+
+# 환경 변수 설정
+cp .env.local.example .env.local
+# .env.local 파일에 실제 API 키 입력
+
+# 개발 서버 실행
+npm run dev
+```
+
+테스트 UI 기능:
+
+- **3개 API 테스트**: 상품검색, GoldBox, CoupangPL
+- **실시간 파라미터 조정**: 키워드, 결과 수, 이미지 크기 등
+- **응답 데이터 시각화**: 상품 카드, 가격, 배송 옵션 표시
+- **에러 처리**: 상세한 에러 메시지 및 처리 상태
 
 ## 📝 API 레퍼런스
 
 ### CoupangPartnersClient
 
 #### Constructor
+
 ```typescript
 new CoupangPartnersClient(credentials, config?)
 ```
 
+**Parameters:**
+
+- `credentials`: `CoupangCredentials` - API 인증 정보
+- `config?`: `Partial<SDKConfig>` - 옵션 설정
+
 #### Methods
 
-| Method | Description | Parameters | Returns |
-|--------|-------------|------------|---------|
-| `getGoldBoxProducts()` | GoldBox 상품 조회 | `options?` | `Promise<Product[]>` |
-| `getProductsByCategory()` | 카테고리별 상품 조회 | `category: string` | `Promise<Product[]>` |
-| `getProductsByDiscount()` | 할인율별 상품 조회 | `minDiscount: number` | `Promise<Product[]>` |
-| `getProductsByPriceRange()` | 가격대별 상품 조회 | `minPrice: number, maxPrice: number` | `Promise<Product[]>` |
-| `getTopRatedProducts()` | 고평점 상품 조회 | `minRating?: number, limit?: number` | `Promise<Product[]>` |
-| `getHighDiscountProducts()` | 고할인 상품 조회 | `minDiscount?: number, limit?: number` | `Promise<Product[]>` |
-| `clearCache()` | 캐시 삭제 | - | `void` |
-| `getCacheInfo()` | 캐시 정보 조회 | - | `CacheInfo` |
-| `healthCheck()` | 헬스 체크 | - | `Promise<boolean>` |
+| Method                 | Description           | Parameters                                        | Returns                          |
+| ---------------------- | --------------------- | ------------------------------------------------- | -------------------------------- |
+| `searchProducts()`     | 키워드 상품 검색      | `keyword: string, options?: ProductSearchOptions` | `Promise<ProductSearchResponse>` |
+| `goldbox()`            | GoldBox 상품 조회     | `params?: GoldBoxParams`                          | `Promise<GoldBoxResponse>`       |
+| `goldboxWithFilters()` | 필터링된 GoldBox 조회 | `params?: GoldBoxParams, filters?: FilterOptions` | `Promise<GoldBoxResponse>`       |
+| `coupangPL()`          | CoupangPL 상품 조회   | `params?: CoupangPLParams`                        | `Promise<CoupangPLResponse>`     |
+| `generateSignature()`  | HMAC 서명 생성        | `method: string, url: string`                     | `string`                         |
+| `updateConfig()`       | 설정 업데이트         | `config: Partial<SDKConfig>`                      | `void`                           |
+| `getConfig()`          | 현재 설정 조회        | -                                                 | `Omit<SDKConfig, 'credentials'>` |
+| `healthCheck()`        | 헬스 체크             | -                                                 | `boolean`                        |
 
-### Product 타입
+### 타입 정의
+
+#### Product (검색)
 
 ```typescript
 interface Product {
-  productName: string;        // 상품명
-  productPrice: number;       // 현재 판매가
-  productImage: string;       // 상품 이미지 URL
-  productUrl: string;         // 상품 링크 URL
-  originalPrice?: number;     // 원가 (할인 전 가격)
-  discount?: number;          // 할인율 (%)
-  category?: string;          // 카테고리명
-  isMembership?: boolean;     // 멤버십 혜택 여부
-  isSamsungCard?: boolean;    // 삼성카드 할인 여부
-  specialNote?: string;       // 특별 노트
-  additionalDiscount?: number; // 추가 할인율 (%)
-  isAvailable?: boolean;      // 구매 가능 여부
-  rating?: number;            // 상품 평점 (0-5)
-  reviewCount?: number;       // 리뷰 수
-  lastUpdated: string;        // 마지막 업데이트 시간
+  keyword: string;
+  rank: number;
+  isRocket: boolean;
+  isFreeShipping: boolean;
+  productId: number;
+  productImage: string;
+  productName: string;
+  productPrice: number;
+  productUrl: string;
 }
 ```
 
-### SearchOptions 타입
+#### GoldBoxProduct
 
 ```typescript
-interface ProductSearchOptions {
-  category?: string;      // 카테고리 필터
-  minDiscount?: number;   // 최소 할인율 (%)
-  maxPrice?: number;      // 최대 가격
-  minPrice?: number;      // 최소 가격
-  limit?: number;         // 결과 개수 제한
-  minRating?: number;     // 평점 필터 (이상)
+interface GoldBoxProduct {
+  categoryName: string;
+  isRocket: boolean;
+  isFreeShipping: boolean;
+  productId: number;
+  productImage: string;
+  productName: string;
+  productPrice: number;
+  productUrl: string;
+}
+```
+
+#### CoupangPLProduct
+
+```typescript
+interface CoupangPLProduct {
+  categoryName: string;
+  isRocket: boolean;
+  isFreeShipping: boolean;
+  productId: number;
+  productImage: string;
+  productName: string;
+  productPrice: number;
+  productUrl: string;
+}
+```
+
+#### API 응답 형식
+
+```typescript
+interface ApiResponse {
+  rCode: string; // "0": 성공, 기타: 에러
+  rMessage: string; // 응답 메시지
+  data?: Product[]; // 상품 데이터 (API별로 다름)
+}
+```
+
+#### 설정 옵션
+
+```typescript
+interface SDKConfig {
+  credentials: CoupangCredentials;
+  timeout?: number; // 기본값: 10000ms
+  debug?: boolean; // 기본값: false
+}
+
+interface CoupangCredentials {
+  accessKey: string;
+  secretKey: string;
+}
+```
+
+## 🔧 에러 처리
+
+SDK는 다양한 에러 상황을 자동으로 처리합니다:
+
+```typescript
+try {
+  const result = await client.searchProducts('키워드');
+} catch (error) {
+  if (error.message.includes('401')) {
+    console.error('인증 실패: API 키를 확인하세요');
+  } else if (error.message.includes('429')) {
+    console.error('요청 한도 초과: 잠시 후 다시 시도하세요');
+  } else if (error.message.includes('HTML error page')) {
+    console.error('API 서버 오류: 서비스 점검 중일 수 있습니다');
+  } else {
+    console.error('알 수 없는 오류:', error.message);
+  }
 }
 ```
 
@@ -232,22 +308,54 @@ npm run test:coverage
 # 기본 사용 예제
 npm run example
 
-# 고급 필터링 예제 (별도로 실행)
-npx ts-node examples/advanced-filtering.ts
+# CoupangPL API 테스트
+npx ts-node examples/test-coupangpl.ts
+
+# GoldBox API 테스트
+npx ts-node examples/goldbox-api-test.ts
 ```
 
-## 🤝 기여하기
+## 🛠️ 개발 명령어
 
-1. 이 저장소를 포크합니다
-2. 새 기능 브랜치를 만듭니다 (`git checkout -b feature/amazing-feature`)
-3. 변경사항을 커밋합니다 (`git commit -m 'Add amazing feature'`)
-4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`)
-5. Pull Request를 생성합니다
+```bash
+# 개발 모드 (watch)
+npm run dev
+
+# TypeScript 컴파일
+npm run build
+
+# 코드 검사
+npm run lint
+
+# 코드 포맷팅
+npm run format
+
+# 패키지 준비
+npm run prepublishOnly
+```
+
+## 📋 요구사항
+
+- Node.js 16+
+- TypeScript 4.5+ (개발 시)
+- Coupang Partners API 인증 키
+
+## 🔄 버전 히스토리
+
+### v1.0.0
+
+- ✨ 상품 검색 API 지원
+- ✨ GoldBox API 지원
+- ✨ CoupangPL API 지원
+- 🛡️ 향상된 에러 처리 (HTML 응답, JSON 파싱 에러)
+- 🧪 테스트 UI 제공
+- 📘 완전한 TypeScript 지원
 
 ## 📞 지원
 
 - 🐛 버그 리포트: [GitHub Issues](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues)
 - 💡 기능 요청: [GitHub Discussions](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/discussions)
+- 📧 문의: mooooburg.dev@gmail.com
 
 ## 📜 라이선스
 
