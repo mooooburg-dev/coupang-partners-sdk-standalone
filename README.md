@@ -342,7 +342,7 @@ npm run prepublishOnly
 
 ## 🔄 버전 히스토리
 
-### v1.1.0
+### v1.2.0
 
 - ✨ CoupangPL API 추가
 - 🛡️ 향상된 에러 처리 (HTML 응답, JSON 파싱 에러)

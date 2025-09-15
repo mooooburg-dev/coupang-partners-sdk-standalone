@@ -78,7 +78,7 @@ describe('CoupangPartnersClient', () => {
 
   describe('getVersion', () => {
     it('should return version string', () => {
-      expect(client.getVersion()).toBe('1.0.0');
+      expect(client.getVersion()).toBe('1.2.0');
     });
   });
 
