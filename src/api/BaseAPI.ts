@@ -60,10 +60,28 @@ export abstract class BaseAPI {
         throw new Error(`API request failed: ${response.status} ${response.statusText}`);
       }
 
-      const data = (await response.json()) as T;
-      logger.debug('API response received:', data);
+      const responseText = await response.text();
 
-      return data;
+      // Check if response is empty
+      if (!responseText.trim()) {
+        logger.error('API returned empty response');
+        throw new Error('API returned empty response');
+      }
+
+      // Check if response is HTML (error page)
+      if (responseText.trim().startsWith('<!DOCTYPE') || responseText.trim().startsWith('<html')) {
+        logger.error('API returned HTML instead of JSON:', responseText.substring(0, 200));
+        throw new Error('API returned HTML error page instead of JSON');
+      }
+
+      try {
+        const data = JSON.parse(responseText) as T;
+        logger.debug('API response received:', data);
+        return data;
+      } catch (parseError) {
+        logger.error('Failed to parse JSON response:', responseText.substring(0, 500));
+        throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown parsing error'}`);
+      }
     } catch (error) {
       logger.error('API request error:', error);
       throw error;
