@@ -41,7 +41,6 @@
     "url": "https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues"
   },
   "homepage": "https://github.com/mooooburg-dev/coupang-partners-sdk-standalone#readme",
-  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^29.5.8",
     "@types/node": "^20.9.0",
@@ -64,5 +63,11 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@types/node-fetch": "^2.6.13",
+    "abort-controller": "^3.0.0",
+    "dotenv": "^17.2.2",
+    "node-fetch": "^2.7.0"
   }
 }
