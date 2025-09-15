@@ -19,6 +19,13 @@ export type {
   ProductSearchParams,
   ProductSearchResponse,
   ProductSearchOptions,
+  GoldBoxProduct,
+  GoldBoxParams,
+  GoldBoxResponse,
+  GoldBoxOptions,
+  CoupangPLProduct,
+  CoupangPLParams,
+  CoupangPLResponse,
 } from './types/Product';
 
 // Utility exports

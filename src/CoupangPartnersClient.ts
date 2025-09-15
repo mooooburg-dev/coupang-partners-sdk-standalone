@@ -2,7 +2,14 @@ import { CoupangAuth } from './auth/CoupangAuth';
 import { CoupangCredentials, SDKConfig } from './types/Config';
 import { logger, LogLevel } from './utils/Logger';
 import { ProductsAPI } from './api/ProductsAPI';
-import { ProductSearchOptions, ProductSearchResponse } from './types/Product';
+import {
+  ProductSearchOptions,
+  ProductSearchResponse,
+  GoldBoxOptions,
+  GoldBoxResponse,
+  CoupangPLParams,
+  CoupangPLResponse,
+} from './types/Product';
 
 /**
  * Main Coupang Partners SDK Client
@@ -136,6 +143,82 @@ export class CoupangPartnersClient {
     options?: ProductSearchOptions
   ): Promise<ProductSearchResponse> {
     return this.productsAPI.search(keyword, options);
+  }
+
+  /**
+   * Get GoldBox products (hot deals)
+   *
+   * @param options GoldBox options (subId, imageSize)
+   * @returns Promise<GoldBoxResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.goldbox({
+   *   subId: 'my-sub-id',
+   *   imageSize: '230x230'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('GoldBox products:', response.data);
+   * }
+   * ```
+   */
+  async goldbox(options?: GoldBoxOptions): Promise<GoldBoxResponse> {
+    return this.productsAPI.goldbox(options);
+  }
+
+  /**
+   * Get GoldBox products with filtering options
+   *
+   * @param options GoldBox options (subId, imageSize)
+   * @param filters Client-side filtering options
+   * @returns Promise<GoldBoxResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.goldboxWithFilters({
+   *   imageSize: '230x230'
+   * }, {
+   *   minPrice: 10000,
+   *   maxPrice: 100000,
+   *   rocketOnly: true
+   * });
+   * ```
+   */
+  async goldboxWithFilters(
+    options?: GoldBoxOptions,
+    filters?: {
+      minPrice?: number;
+      maxPrice?: number;
+      categories?: string[];
+      rocketOnly?: boolean;
+      freeShippingOnly?: boolean;
+    }
+  ): Promise<GoldBoxResponse> {
+    return this.productsAPI.goldboxWithFilters(options, filters);
+  }
+
+  /**
+   * Get CoupangPL products
+   *
+   * @param options CoupangPL options (limit, subId, imageSize)
+   * @returns Promise<CoupangPLResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.coupangPL({
+   *   limit: 50,
+   *   subId: 'my-sub-id',
+   *   imageSize: '512x512'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('CoupangPL products:', response.data);
+   * }
+   * ```
+   */
+  async coupangPL(options?: CoupangPLParams): Promise<CoupangPLResponse> {
+    return this.productsAPI.coupangPL(options);
   }
 
   /**
