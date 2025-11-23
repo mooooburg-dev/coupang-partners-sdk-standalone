@@ -9,6 +9,8 @@ import {
   GoldBoxResponse,
   CoupangPLParams,
   CoupangPLResponse,
+  RecommendationParams,
+  RecommendationResponse,
 } from './types/Product';
 
 /**
@@ -219,6 +221,29 @@ export class CoupangPartnersClient {
    */
   async coupangPL(options?: CoupangPLParams): Promise<CoupangPLResponse> {
     return this.productsAPI.coupangPL(options);
+  }
+
+  /**
+   * Get personalized recommendation products
+   *
+   * @param params Recommendation parameters (deviceId, subId, imageSize)
+   * @returns Promise<RecommendationResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.recommendation({
+   *   deviceId: 'your-adid-or-gaid',
+   *   subId: 'my-tracking-id',
+   *   imageSize: '512x512'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Recommendation products:', response.data);
+   * }
+   * ```
+   */
+  async recommendation(params: RecommendationParams): Promise<RecommendationResponse> {
+    return this.productsAPI.recommendation(params);
   }
 
   /**

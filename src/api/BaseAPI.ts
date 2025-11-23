@@ -80,7 +80,9 @@ export abstract class BaseAPI {
         return data;
       } catch (parseError) {
         logger.error('Failed to parse JSON response:', responseText.substring(0, 500));
-        throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown parsing error'}`);
+        throw new Error(
+          `Invalid JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown parsing error'}`
+        );
       }
     } catch (error) {
       logger.error('API request error:', error);

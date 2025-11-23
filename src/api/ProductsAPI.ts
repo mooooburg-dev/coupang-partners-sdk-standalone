@@ -8,6 +8,8 @@ import {
   GoldBoxResponse,
   CoupangPLParams,
   CoupangPLResponse,
+  RecommendationParams,
+  RecommendationResponse,
 } from '../types/Product';
 import { logger } from '../utils/Logger';
 
@@ -258,6 +260,70 @@ export class ProductsAPI extends BaseAPI {
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error('Failed to get CoupangPL products', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration,
+        params,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get personalized recommendation products
+   *
+   * @param params Recommendation request parameters
+   * @returns Promise<RecommendationResponse>
+   *
+   * @example
+   * ```typescript
+   * const productsAPI = new ProductsAPI(auth);
+   * const response = await productsAPI.recommendation({
+   *   deviceId: 'your-device-id',
+   *   subId: 'my-tracking-id',
+   *   imageSize: '512x512'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Recommendation products:', response.data);
+   * }
+   * ```
+   */
+  async recommendation(params: RecommendationParams): Promise<RecommendationResponse> {
+    const startTime = Date.now();
+
+    try {
+      logger.info('Getting personalized recommendation products', { params });
+
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+
+      queryParams.append('deviceId', params.deviceId);
+
+      if (params.subId) {
+        queryParams.append('subId', params.subId);
+      }
+
+      if (params.imageSize) {
+        queryParams.append('imageSize', params.imageSize);
+      }
+
+      // Build full URL with query parameters
+      const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/products/reco';
+      const url = queryParams.toString() ? `${endpoint}?${queryParams.toString()}` : endpoint;
+
+      const response = await this.makeRequest<RecommendationResponse>('GET', url);
+
+      const duration = Date.now() - startTime;
+      logger.info('Recommendation products retrieved successfully', {
+        duration,
+        productCount: response.data?.length || 0,
+        rCode: response.rCode,
+      });
+
+      return response;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      logger.error('Failed to get recommendation products', {
         error: error instanceof Error ? error.message : 'Unknown error',
         duration,
         params,

@@ -26,6 +26,9 @@ export type {
   CoupangPLProduct,
   CoupangPLParams,
   CoupangPLResponse,
+  RecommendationProduct,
+  RecommendationParams,
+  RecommendationResponse,
 } from './types/Product';
 
 // Utility exports

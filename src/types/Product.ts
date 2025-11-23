@@ -116,3 +116,33 @@ export interface CoupangPLResponse {
   rMessage: string;
   data?: CoupangPLProduct[];
 }
+
+/**
+ * Personalized recommendation API request parameters
+ */
+export interface RecommendationParams {
+  deviceId: string;
+  subId?: string;
+  imageSize?: '230x230' | '300x300' | '512x512';
+}
+
+/**
+ * Recommendation product data structure
+ */
+export interface RecommendationProduct {
+  isRocket: boolean;
+  productId: string;
+  productImage: string;
+  productName: string;
+  productPrice: number;
+  productUrl: string;
+}
+
+/**
+ * Personalized recommendation API response structure
+ */
+export interface RecommendationResponse {
+  rCode: string;
+  rMessage: string;
+  data?: RecommendationProduct[];
+}
