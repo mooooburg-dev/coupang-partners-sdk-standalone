@@ -2,6 +2,7 @@ import { CoupangAuth } from './auth/CoupangAuth';
 import { CoupangCredentials, SDKConfig } from './types/Config';
 import { logger, LogLevel } from './utils/Logger';
 import { ProductsAPI } from './api/ProductsAPI';
+import { LinksAPI } from './api/LinksAPI';
 import {
   ProductSearchOptions,
   ProductSearchResponse,
@@ -11,6 +12,8 @@ import {
   CoupangPLResponse,
   RecommendationParams,
   RecommendationResponse,
+  DeeplinkParams,
+  DeeplinkResponse,
 } from './types/Product';
 
 /**
@@ -32,6 +35,7 @@ export class CoupangPartnersClient {
   private auth: CoupangAuth;
   private config: Required<SDKConfig>;
   private productsAPI: ProductsAPI;
+  private linksAPI: LinksAPI;
 
   constructor(credentials: CoupangCredentials, config: Partial<SDKConfig> = {}) {
     // Merge with default config
@@ -49,6 +53,7 @@ export class CoupangPartnersClient {
     // Initialize components
     this.auth = new CoupangAuth(credentials);
     this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
+    this.linksAPI = new LinksAPI(this.auth, this.config.timeout);
 
     logger.info('CoupangPartnersClient initialized successfully');
   }
@@ -92,10 +97,12 @@ export class CoupangPartnersClient {
     if (newConfig.credentials) {
       this.auth.updateCredentials(newConfig.credentials);
       this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
+      this.linksAPI = new LinksAPI(this.auth, this.config.timeout);
     }
 
     if (newConfig.timeout) {
       this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
+      this.linksAPI = new LinksAPI(this.auth, this.config.timeout);
     }
 
     logger.info('SDK configuration updated');
@@ -244,6 +251,30 @@ export class CoupangPartnersClient {
    */
   async recommendation(params: RecommendationParams): Promise<RecommendationResponse> {
     return this.productsAPI.recommendation(params);
+  }
+
+  /**
+   * Convert Coupang URLs to partner affiliate links (deeplink)
+   *
+   * @param params Deeplink parameters (coupangUrls, subId)
+   * @returns Promise<DeeplinkResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.deeplink({
+   *   coupangUrls: [
+   *     'https://www.coupang.com/vp/products/184614775'
+   *   ],
+   *   subId: 'my-sub-id'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Converted links:', response.data);
+   * }
+   * ```
+   */
+  async deeplink(params: DeeplinkParams): Promise<DeeplinkResponse> {
+    return this.linksAPI.deeplink(params);
   }
 
   /**

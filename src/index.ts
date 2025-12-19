@@ -29,6 +29,9 @@ export type {
   RecommendationProduct,
   RecommendationParams,
   RecommendationResponse,
+  DeeplinkParams,
+  DeeplinkData,
+  DeeplinkResponse,
 } from './types/Product';
 
 // Utility exports

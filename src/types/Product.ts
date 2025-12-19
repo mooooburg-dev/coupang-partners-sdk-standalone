@@ -146,3 +146,28 @@ export interface RecommendationResponse {
   rMessage: string;
   data?: RecommendationProduct[];
 }
+
+/**
+ * Deeplink API request parameters
+ */
+export interface DeeplinkParams {
+  coupangUrls: string[];
+  subId?: string;
+}
+
+/**
+ * Deeplink data structure
+ */
+export interface DeeplinkData {
+  originalUrl: string;
+  shortUrl: string;
+}
+
+/**
+ * Deeplink API response structure
+ */
+export interface DeeplinkResponse {
+  rCode: string;
+  rMessage: string;
+  data?: DeeplinkData[];
+}

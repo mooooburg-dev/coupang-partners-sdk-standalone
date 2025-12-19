@@ -22,7 +22,8 @@ export abstract class BaseAPI {
   protected async makeRequest<T>(
     method: string,
     endpoint: string,
-    params?: Record<string, any>
+    params?: Record<string, any>,
+    body?: any
   ): Promise<T> {
     const url = new URL(endpoint, this.baseUrl);
 
@@ -43,14 +44,21 @@ export abstract class BaseAPI {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-      const response = await fetch(url.toString(), {
+      const fetchOptions: any = {
         method,
         headers: {
           ...authHeader,
           'Content-Type': 'application/json',
         },
         signal: controller.signal as any,
-      });
+      };
+
+      // Add body for POST, PUT, PATCH requests
+      if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
+        fetchOptions.body = JSON.stringify(body);
+      }
+
+      const response = await fetch(url.toString(), fetchOptions);
 
       clearTimeout(timeoutId);
 
