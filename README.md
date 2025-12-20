@@ -105,7 +105,7 @@ if (deeplinkResult.rCode === '0') {
   const links = deeplinkResult.data || [];
   links.forEach(link => {
     console.log(`Original: ${link.originalUrl}`);
-    console.log(`Shortened: ${link.shortenUrl}`);
+    console.log(`Short: ${link.shortUrl}`);
   });
 }
 ```
@@ -271,7 +271,7 @@ interface CoupangPLProduct {
 ```typescript
 interface DeeplinkData {
   originalUrl: string; // 원본 쿠팡 URL
-  shortenUrl: string; // 파트너스 제휴 링크
+  shortUrl: string; // 파트너스 제휴 링크
 }
 ```
 
@@ -381,6 +381,11 @@ npm run prepublishOnly
 - Coupang Partners API 인증 키
 
 ## 🔄 버전 히스토리
+
+### v1.2.4
+
+- 🐛 딥링크 API 엔드포인트 수정
+- 🔧 README 타입 정의 수정 (shortenUrl → shortUrl)
 
 ### v1.2.3
 

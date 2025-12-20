@@ -45,7 +45,7 @@ export class LinksAPI extends BaseAPI {
         subId: params.subId,
       });
 
-      const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/products/deeplink';
+      const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/v1/deeplink';
 
       const requestBody: DeeplinkParams = {
         coupangUrls: params.coupangUrls,
