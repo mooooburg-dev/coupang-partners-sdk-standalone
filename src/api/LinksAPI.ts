@@ -45,19 +45,13 @@ export class LinksAPI extends BaseAPI {
         subId: params.subId,
       });
 
+      // const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/deeplink';
       const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/v1/deeplink';
 
-      const requestBody: DeeplinkParams = {
+      const response = await this.makeRequest<DeeplinkResponse>('POST', endpoint, undefined, {
         coupangUrls: params.coupangUrls,
-        ...(params.subId && { subId: params.subId }),
-      };
-
-      const response = await this.makeRequest<DeeplinkResponse>(
-        'POST',
-        endpoint,
-        undefined,
-        requestBody
-      );
+        subId: params.subId || '',
+      });
 
       const duration = Date.now() - startTime;
       logger.info('Deeplink conversion completed successfully', {

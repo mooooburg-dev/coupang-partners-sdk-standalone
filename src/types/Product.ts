@@ -160,7 +160,8 @@ export interface DeeplinkParams {
  */
 export interface DeeplinkData {
   originalUrl: string;
-  shortUrl: string;
+  shortenUrl: string;
+  landingUrl: string;
 }
 
 /**

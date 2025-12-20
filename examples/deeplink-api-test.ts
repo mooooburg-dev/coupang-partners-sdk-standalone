@@ -39,7 +39,8 @@ async function testDeeplinkAPI() {
       console.log('\n✅ Success! Converted links:');
       response.data?.forEach((link, index) => {
         console.log(`\n  ${index + 1}. Original: ${link.originalUrl}`);
-        console.log(`     Short:   ${link.shortUrl}`);
+        console.log(`     Short:    ${link.shortenUrl}`);
+        console.log(`     Landing:  ${link.landingUrl}`);
       });
     } else {
       console.log(`\n❌ Error: ${response.rMessage}`);
