@@ -1,6 +1,6 @@
 {
   "name": "coupang-partners-sdk-standalone",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Coupang Partners Authentication Library for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

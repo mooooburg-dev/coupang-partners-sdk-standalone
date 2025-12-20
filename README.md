@@ -382,10 +382,13 @@ npm run prepublishOnly
 
 ## 🔄 버전 히스토리
 
+### v1.2.3
+
+- 📚 README 딥링크 API 문서 업데이트
+
 ### v1.2.2
 
 - ✨ 딥링크(Deeplink) API 추가
-- 📚 README 딥링크 API 문서 추가
 - 🐛 버그 수정 및 안정성 개선
 
 ### v1.2.0
