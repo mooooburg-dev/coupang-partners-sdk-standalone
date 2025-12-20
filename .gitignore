@@ -78,4 +78,7 @@ pids
 .fusebox/
 
 # DynamoDB Local files
-.dynamodb/.npmrc
+.dynamodb/
+
+# npm config with auth tokens
+.npmrc
