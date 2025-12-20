@@ -78,4 +78,4 @@ pids
 .fusebox/
 
 # DynamoDB Local files
-.dynamodb/
+.dynamodb/.npmrc
