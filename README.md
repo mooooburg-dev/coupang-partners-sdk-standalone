@@ -10,7 +10,7 @@
 
 - 🔐 **자동 인증**: HMAC SHA256 CEA 서명 자동 생성
 - 📘 **TypeScript 지원**: 완전한 타입 안정성 제공
-- 🚀 **다양한 API 지원**: 상품검색, GoldBox, CoupangPL API
+- 🚀 **다양한 API 지원**: 상품검색, GoldBox, CoupangPL, 딥링크 API
 - 🛡️ **향상된 에러 핸들링**: HTTP 에러, JSON 파싱 에러 자동 처리
 - 🔄 **자동 재시도**: 네트워크 오류 시 자동 재시도 로직
 - 📊 **상세 로깅**: 구조화된 로깅 시스템과 디버그 모드
@@ -86,6 +86,27 @@ const coupangplResult = await client.coupangPL({
 if (coupangplResult.rCode === '0') {
   const products = coupangplResult.data || [];
   console.log(`Found ${products.length} CoupangPL products`);
+}
+```
+
+### 딥링크(Deeplink) 생성
+
+```typescript
+// 쿠팡 URL을 파트너스 제휴 링크로 변환
+const deeplinkResult = await client.deeplink({
+  coupangUrls: [
+    'https://www.coupang.com/vp/products/184614775',
+    'https://www.coupang.com/vp/products/123456789',
+  ],
+  subId: 'my-tracking-id', // 선택사항
+});
+
+if (deeplinkResult.rCode === '0') {
+  const links = deeplinkResult.data || [];
+  links.forEach(link => {
+    console.log(`Original: ${link.originalUrl}`);
+    console.log(`Shortened: ${link.shortenUrl}`);
+  });
 }
 ```
 
@@ -185,16 +206,17 @@ new CoupangPartnersClient(credentials, config?)
 
 #### Methods
 
-| Method                 | Description           | Parameters                                        | Returns                          |
-| ---------------------- | --------------------- | ------------------------------------------------- | -------------------------------- |
-| `searchProducts()`     | 키워드 상품 검색      | `keyword: string, options?: ProductSearchOptions` | `Promise<ProductSearchResponse>` |
-| `goldbox()`            | GoldBox 상품 조회     | `params?: GoldBoxParams`                          | `Promise<GoldBoxResponse>`       |
-| `goldboxWithFilters()` | 필터링된 GoldBox 조회 | `params?: GoldBoxParams, filters?: FilterOptions` | `Promise<GoldBoxResponse>`       |
-| `coupangPL()`          | CoupangPL 상품 조회   | `params?: CoupangPLParams`                        | `Promise<CoupangPLResponse>`     |
-| `generateSignature()`  | HMAC 서명 생성        | `method: string, url: string`                     | `string`                         |
-| `updateConfig()`       | 설정 업데이트         | `config: Partial<SDKConfig>`                      | `void`                           |
-| `getConfig()`          | 현재 설정 조회        | -                                                 | `Omit<SDKConfig, 'credentials'>` |
-| `healthCheck()`        | 헬스 체크             | -                                                 | `boolean`                        |
+| Method                 | Description                 | Parameters                                        | Returns                          |
+| ---------------------- | --------------------------- | ------------------------------------------------- | -------------------------------- |
+| `searchProducts()`     | 키워드 상품 검색            | `keyword: string, options?: ProductSearchOptions` | `Promise<ProductSearchResponse>` |
+| `goldbox()`            | GoldBox 상품 조회           | `params?: GoldBoxParams`                          | `Promise<GoldBoxResponse>`       |
+| `goldboxWithFilters()` | 필터링된 GoldBox 조회       | `params?: GoldBoxParams, filters?: FilterOptions` | `Promise<GoldBoxResponse>`       |
+| `coupangPL()`          | CoupangPL 상품 조회         | `params?: CoupangPLParams`                        | `Promise<CoupangPLResponse>`     |
+| `deeplink()`           | 딥링크 생성 (URL 변환)      | `params: DeeplinkParams`                          | `Promise<DeeplinkResponse>`      |
+| `generateSignature()`  | HMAC 서명 생성              | `method: string, url: string`                     | `string`                         |
+| `updateConfig()`       | 설정 업데이트               | `config: Partial<SDKConfig>`                      | `void`                           |
+| `getConfig()`          | 현재 설정 조회              | -                                                 | `Omit<SDKConfig, 'credentials'>` |
+| `healthCheck()`        | 헬스 체크                   | -                                                 | `boolean`                        |
 
 ### 타입 정의
 
@@ -241,6 +263,24 @@ interface CoupangPLProduct {
   productName: string;
   productPrice: number;
   productUrl: string;
+}
+```
+
+#### DeeplinkData
+
+```typescript
+interface DeeplinkData {
+  originalUrl: string; // 원본 쿠팡 URL
+  shortenUrl: string; // 파트너스 제휴 링크
+}
+```
+
+#### DeeplinkParams
+
+```typescript
+interface DeeplinkParams {
+  coupangUrls: string[]; // 변환할 쿠팡 URL 배열
+  subId?: string; // 추적용 서브 ID (선택사항)
 }
 ```
 
@@ -341,6 +381,12 @@ npm run prepublishOnly
 - Coupang Partners API 인증 키
 
 ## 🔄 버전 히스토리
+
+### v1.2.2
+
+- ✨ 딥링크(Deeplink) API 추가
+- 📚 README 딥링크 API 문서 추가
+- 🐛 버그 수정 및 안정성 개선
 
 ### v1.2.0
 
