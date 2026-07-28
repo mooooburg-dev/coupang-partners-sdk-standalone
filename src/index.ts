@@ -41,6 +41,8 @@ export type {
   OrderReportResponse,
   CommissionReportData,
   CommissionReportResponse,
+  CancelReportData,
+  CancelReportResponse,
 } from './types/Report';
 
 // Utility exports

@@ -83,3 +83,20 @@ export interface CommissionReportResponse {
   rMessage: string;
   data?: CommissionReportData[];
 }
+
+/**
+ * Cancel report data structure (주문 리포트 필드 + 주문일)
+ */
+export interface CancelReportData extends OrderReportData {
+  /** 주문일, 형식: yyyyMMdd */
+  orderDate: string;
+}
+
+/**
+ * Cancel report API response structure
+ */
+export interface CancelReportResponse {
+  rCode: string;
+  rMessage: string;
+  data?: CancelReportData[];
+}

@@ -21,6 +21,7 @@ import {
   ClickReportResponse,
   OrderReportResponse,
   CommissionReportResponse,
+  CancelReportResponse,
 } from './types/Report';
 
 /**
@@ -355,6 +356,29 @@ export class CoupangPartnersClient {
    */
   async getCommissionReport(params: ReportParams): Promise<CommissionReportResponse> {
     return this.reportsAPI.commission(params);
+  }
+
+  /**
+   * Get daily cancel report
+   * (일 별 취소 정보. 일 별 실적은 매일 오후 15:00에 업데이트 됩니다)
+   *
+   * @param params Report parameters (startDate, endDate, subId, page)
+   * @returns Promise<CancelReportResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.getCancelsReport({
+   *   startDate: '20250701',
+   *   endDate: '20250731'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Cancel reports:', response.data);
+   * }
+   * ```
+   */
+  async getCancelsReport(params: ReportParams): Promise<CancelReportResponse> {
+    return this.reportsAPI.cancels(params);
   }
 
   /**

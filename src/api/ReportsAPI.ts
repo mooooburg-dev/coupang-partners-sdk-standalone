@@ -5,6 +5,7 @@ import {
   ClickReportResponse,
   OrderReportResponse,
   CommissionReportResponse,
+  CancelReportResponse,
 } from '../types/Report';
 import { logger } from '../utils/Logger';
 
@@ -222,6 +223,66 @@ export class ReportsAPI extends BaseAPI {
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error('Failed to fetch commission report', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration,
+        params,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get daily cancel report
+   *
+   * @param params Report request parameters (startDate, endDate, subId, page)
+   * @returns Promise<CancelReportResponse>
+   *
+   * @example
+   * ```typescript
+   * const reportsAPI = new ReportsAPI(auth);
+   * const response = await reportsAPI.cancels({
+   *   startDate: '20250701',
+   *   endDate: '20250731'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Cancel reports:', response.data);
+   * }
+   * ```
+   */
+  async cancels(params: ReportParams): Promise<CancelReportResponse> {
+    const startTime = Date.now();
+
+    try {
+      this.validateReportParams(params);
+
+      logger.info('Fetching cancel report', {
+        startDate: params.startDate,
+        endDate: params.endDate,
+        subId: params.subId,
+        page: params.page,
+      });
+
+      const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/reports/cancels';
+
+      const response = await this.makeRequest<CancelReportResponse>('GET', endpoint, {
+        startDate: params.startDate,
+        endDate: params.endDate,
+        subId: params.subId,
+        page: params.page,
+      });
+
+      const duration = Date.now() - startTime;
+      logger.info('Cancel report fetched successfully', {
+        duration,
+        recordCount: response.data?.length || 0,
+        rCode: response.rCode,
+      });
+
+      return response;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      logger.error('Failed to fetch cancel report', {
         error: error instanceof Error ? error.message : 'Unknown error',
         duration,
         params,
