@@ -3,6 +3,7 @@ import { CoupangCredentials, SDKConfig } from './types/Config';
 import { logger, LogLevel } from './utils/Logger';
 import { ProductsAPI } from './api/ProductsAPI';
 import { LinksAPI } from './api/LinksAPI';
+import { ReportsAPI } from './api/ReportsAPI';
 import {
   ProductSearchOptions,
   ProductSearchResponse,
@@ -15,6 +16,7 @@ import {
   DeeplinkParams,
   DeeplinkResponse,
 } from './types/Product';
+import { ReportParams, ClickReportResponse } from './types/Report';
 
 /**
  * Main Coupang Partners SDK Client
@@ -36,6 +38,7 @@ export class CoupangPartnersClient {
   private config: Required<SDKConfig>;
   private productsAPI: ProductsAPI;
   private linksAPI: LinksAPI;
+  private reportsAPI: ReportsAPI;
 
   constructor(credentials: CoupangCredentials, config: Partial<SDKConfig> = {}) {
     // Merge with default config
@@ -54,6 +57,7 @@ export class CoupangPartnersClient {
     this.auth = new CoupangAuth(credentials);
     this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
     this.linksAPI = new LinksAPI(this.auth, this.config.timeout);
+    this.reportsAPI = new ReportsAPI(this.auth, this.config.timeout);
 
     logger.info('CoupangPartnersClient initialized successfully');
   }
@@ -98,11 +102,13 @@ export class CoupangPartnersClient {
       this.auth.updateCredentials(newConfig.credentials);
       this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
       this.linksAPI = new LinksAPI(this.auth, this.config.timeout);
+      this.reportsAPI = new ReportsAPI(this.auth, this.config.timeout);
     }
 
     if (newConfig.timeout) {
       this.productsAPI = new ProductsAPI(this.auth, this.config.timeout);
       this.linksAPI = new LinksAPI(this.auth, this.config.timeout);
+      this.reportsAPI = new ReportsAPI(this.auth, this.config.timeout);
     }
 
     logger.info('SDK configuration updated');
@@ -275,6 +281,29 @@ export class CoupangPartnersClient {
    */
   async deeplink(params: DeeplinkParams): Promise<DeeplinkResponse> {
     return this.linksAPI.deeplink(params);
+  }
+
+  /**
+   * Get daily click report
+   * (일 별 클릭 수에 대한 정보. 일 별 실적은 매일 오후 15:00에 업데이트 됩니다)
+   *
+   * @param params Report parameters (startDate, endDate, subId, page)
+   * @returns Promise<ClickReportResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.getClicksReport({
+   *   startDate: '20250701',
+   *   endDate: '20250731'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Click reports:', response.data);
+   * }
+   * ```
+   */
+  async getClicksReport(params: ReportParams): Promise<ClickReportResponse> {
+    return this.reportsAPI.clicks(params);
   }
 
   /**

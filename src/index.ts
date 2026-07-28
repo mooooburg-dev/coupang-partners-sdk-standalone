@@ -33,6 +33,7 @@ export type {
   DeeplinkData,
   DeeplinkResponse,
 } from './types/Product';
+export type { ReportParams, ClickReportData, ClickReportResponse } from './types/Report';
 
 // Utility exports
 export { Logger, LogLevel } from './utils/Logger';
