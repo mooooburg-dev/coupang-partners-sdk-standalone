@@ -10,7 +10,7 @@
 
 - 🔐 **자동 인증**: HMAC SHA256 CEA 서명 자동 생성
 - 📘 **TypeScript 지원**: 완전한 타입 안정성 제공
-- 🚀 **다양한 API 지원**: 상품검색, GoldBox, CoupangPL, 딥링크 API
+- 🚀 **다양한 API 지원**: 상품검색, GoldBox, CoupangPL, 딥링크, 리포트 API
 - 🛡️ **향상된 에러 핸들링**: HTTP 에러, JSON 파싱 에러 자동 처리
 - 🔄 **자동 재시도**: 네트워크 오류 시 자동 재시도 로직
 - 📊 **상세 로깅**: 구조화된 로깅 시스템과 디버그 모드
@@ -109,6 +109,44 @@ if (deeplinkResult.rCode === '0') {
     console.log(`Landing: ${link.landingUrl}`);
   });
 }
+```
+
+### 리포트 조회
+
+일 별 클릭/주문/수익/취소 실적을 조회합니다. (일 별 실적은 매일 오후 15:00에 업데이트 됩니다)
+
+```typescript
+// 클릭 리포트
+const clicksResult = await client.getClicksReport({
+  startDate: '20250701', // 필수, yyyyMMdd
+  endDate: '20250731', // 필수, 시작일과의 차이가 30일 이내
+  subId: 'my-tracking-id', // 선택사항
+  page: 0, // 선택사항, 기본값 0 (페이지당 최대 1000개)
+});
+
+if (clicksResult.rCode === '0') {
+  clicksResult.data?.forEach(report => {
+    console.log(`${report.date}: ${report.click} clicks`);
+  });
+}
+
+// 주문 리포트 (상품 단위)
+const ordersResult = await client.getOrdersReport({
+  startDate: '20250701',
+  endDate: '20250731',
+});
+
+// 수익(커미션) 리포트
+const commissionResult = await client.getCommissionReport({
+  startDate: '20250701',
+  endDate: '20250731',
+});
+
+// 취소 리포트
+const cancelsResult = await client.getCancelsReport({
+  startDate: '20250701',
+  endDate: '20250731',
+});
 ```
 
 ## 📚 사용 예제
@@ -214,6 +252,10 @@ new CoupangPartnersClient(credentials, config?)
 | `goldboxWithFilters()` | 필터링된 GoldBox 조회       | `params?: GoldBoxParams, filters?: FilterOptions` | `Promise<GoldBoxResponse>`       |
 | `coupangPL()`          | CoupangPL 상품 조회         | `params?: CoupangPLParams`                        | `Promise<CoupangPLResponse>`     |
 | `deeplink()`           | 딥링크 생성 (URL 변환)      | `params: DeeplinkParams`                          | `Promise<DeeplinkResponse>`      |
+| `getClicksReport()`    | 일 별 클릭 리포트 조회      | `params: ReportParams`                            | `Promise<ClickReportResponse>`   |
+| `getOrdersReport()`    | 일 별 주문 리포트 조회      | `params: ReportParams`                            | `Promise<OrderReportResponse>`   |
+| `getCommissionReport()` | 일 별 수익 리포트 조회     | `params: ReportParams`                            | `Promise<CommissionReportResponse>` |
+| `getCancelsReport()`   | 일 별 취소 리포트 조회      | `params: ReportParams`                            | `Promise<CancelReportResponse>`  |
 | `generateSignature()`  | HMAC 서명 생성              | `method: string, url: string`                     | `string`                         |
 | `updateConfig()`       | 설정 업데이트               | `config: Partial<SDKConfig>`                      | `void`                           |
 | `getConfig()`          | 현재 설정 조회              | -                                                 | `Omit<SDKConfig, 'credentials'>` |
@@ -283,6 +325,74 @@ interface DeeplinkData {
 interface DeeplinkParams {
   coupangUrls: string[]; // 변환할 쿠팡 URL 배열
   subId?: string; // 추적용 서브 ID (선택사항)
+}
+```
+
+#### ReportParams (리포트 공통)
+
+```typescript
+interface ReportParams {
+  startDate: string; // 필수, 시작일 (yyyyMMdd, 20181101 이상)
+  endDate: string; // 필수, 종료일 (yyyyMMdd, 시작일과의 차이가 30일 이내)
+  subId?: string; // 채널 아이디 (선택사항)
+  page?: number; // 페이지 번호, 기본값 0 (페이지당 최대 1000개)
+}
+```
+
+#### ClickReportData
+
+```typescript
+interface ClickReportData {
+  date: string; // 일자 (yyyyMMdd)
+  trackingCode: string;
+  subId: string;
+  addtag: string;
+  ctag: string;
+  click: number; // 클릭 수
+}
+```
+
+#### OrderReportData
+
+```typescript
+interface OrderReportData {
+  date: string; // 일자 (yyyyMMdd)
+  trackingCode: string;
+  subId: string;
+  addtag: string;
+  ctag: string;
+  orderId: number;
+  productId: number;
+  productName: string;
+  quantity: number; // 수량
+  gmv: number; // 거래액
+  commissionRate: number; // 수수료율
+  commission: number; // 수수료
+  categoryName: string;
+}
+```
+
+#### CommissionReportData
+
+```typescript
+interface CommissionReportData {
+  date: string; // 일자 (yyyyMMdd)
+  trackingCode: string;
+  subId: string;
+  commission: number; // 수수료
+  click: number; // 클릭 수
+  order: number; // 주문 수
+  cancel: number; // 취소 수
+  gmv: number; // 거래액
+}
+```
+
+#### CancelReportData
+
+```typescript
+// 주문 리포트 필드 + 주문일
+interface CancelReportData extends OrderReportData {
+  orderDate: string; // 주문일 (yyyyMMdd)
 }
 ```
 
@@ -383,6 +493,15 @@ npm run prepublishOnly
 - Coupang Partners API 인증 키
 
 ## 🔄 버전 히스토리
+
+### v1.3.0
+
+- ✨ 리포트 API 4종 추가 (클릭/주문/수익/취소)
+  - `getClicksReport()` - 일 별 클릭 리포트
+  - `getOrdersReport()` - 일 별 주문 리포트 (상품 단위)
+  - `getCommissionReport()` - 일 별 수익 리포트
+  - `getCancelsReport()` - 일 별 취소 리포트
+- 🛡️ 리포트 파라미터 클라이언트 측 검증 (yyyyMMdd 형식, 30일 범위)
 
 ### v1.2.5
 
