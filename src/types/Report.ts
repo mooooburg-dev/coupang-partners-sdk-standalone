@@ -60,3 +60,26 @@ export interface OrderReportResponse {
   rMessage: string;
   data?: OrderReportData[];
 }
+
+/**
+ * Commission report data structure
+ */
+export interface CommissionReportData {
+  date: string;
+  trackingCode: string;
+  subId: string;
+  commission: number;
+  click: number;
+  order: number;
+  cancel: number;
+  gmv: number;
+}
+
+/**
+ * Commission report API response structure
+ */
+export interface CommissionReportResponse {
+  rCode: string;
+  rMessage: string;
+  data?: CommissionReportData[];
+}

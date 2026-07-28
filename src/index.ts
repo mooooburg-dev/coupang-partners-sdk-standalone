@@ -39,6 +39,8 @@ export type {
   ClickReportResponse,
   OrderReportData,
   OrderReportResponse,
+  CommissionReportData,
+  CommissionReportResponse,
 } from './types/Report';
 
 // Utility exports
