@@ -16,7 +16,7 @@ import {
   DeeplinkParams,
   DeeplinkResponse,
 } from './types/Product';
-import { ReportParams, ClickReportResponse } from './types/Report';
+import { ReportParams, ClickReportResponse, OrderReportResponse } from './types/Report';
 
 /**
  * Main Coupang Partners SDK Client
@@ -304,6 +304,29 @@ export class CoupangPartnersClient {
    */
   async getClicksReport(params: ReportParams): Promise<ClickReportResponse> {
     return this.reportsAPI.clicks(params);
+  }
+
+  /**
+   * Get daily order report (상품 단위)
+   * (일 별 주문 정보. 일 별 실적은 매일 오후 15:00에 업데이트 됩니다)
+   *
+   * @param params Report parameters (startDate, endDate, subId, page)
+   * @returns Promise<OrderReportResponse>
+   *
+   * @example
+   * ```typescript
+   * const response = await client.getOrdersReport({
+   *   startDate: '20250701',
+   *   endDate: '20250731'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Order reports:', response.data);
+   * }
+   * ```
+   */
+  async getOrdersReport(params: ReportParams): Promise<OrderReportResponse> {
+    return this.reportsAPI.orders(params);
   }
 
   /**

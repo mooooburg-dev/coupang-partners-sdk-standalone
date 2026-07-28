@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { CoupangAuth } from '../auth/CoupangAuth';
-import { ReportParams, ClickReportResponse } from '../types/Report';
+import { ReportParams, ClickReportResponse, OrderReportResponse } from '../types/Report';
 import { logger } from '../utils/Logger';
 
 /**
@@ -97,6 +97,66 @@ export class ReportsAPI extends BaseAPI {
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error('Failed to fetch click report', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration,
+        params,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get daily order report (상품 단위)
+   *
+   * @param params Report request parameters (startDate, endDate, subId, page)
+   * @returns Promise<OrderReportResponse>
+   *
+   * @example
+   * ```typescript
+   * const reportsAPI = new ReportsAPI(auth);
+   * const response = await reportsAPI.orders({
+   *   startDate: '20250701',
+   *   endDate: '20250731'
+   * });
+   *
+   * if (response.rCode === '0') {
+   *   console.log('Order reports:', response.data);
+   * }
+   * ```
+   */
+  async orders(params: ReportParams): Promise<OrderReportResponse> {
+    const startTime = Date.now();
+
+    try {
+      this.validateReportParams(params);
+
+      logger.info('Fetching order report', {
+        startDate: params.startDate,
+        endDate: params.endDate,
+        subId: params.subId,
+        page: params.page,
+      });
+
+      const endpoint = '/v2/providers/affiliate_open_api/apis/openapi/reports/orders';
+
+      const response = await this.makeRequest<OrderReportResponse>('GET', endpoint, {
+        startDate: params.startDate,
+        endDate: params.endDate,
+        subId: params.subId,
+        page: params.page,
+      });
+
+      const duration = Date.now() - startTime;
+      logger.info('Order report fetched successfully', {
+        duration,
+        recordCount: response.data?.length || 0,
+        rCode: response.rCode,
+      });
+
+      return response;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      logger.error('Failed to fetch order report', {
         error: error instanceof Error ? error.message : 'Unknown error',
         duration,
         params,

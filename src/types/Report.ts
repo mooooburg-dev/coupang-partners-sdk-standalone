@@ -32,3 +32,31 @@ export interface ClickReportResponse {
   rMessage: string;
   data?: ClickReportData[];
 }
+
+/**
+ * Order report data structure (상품 단위)
+ */
+export interface OrderReportData {
+  date: string;
+  trackingCode: string;
+  subId: string;
+  addtag: string;
+  ctag: string;
+  orderId: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  gmv: number;
+  commissionRate: number;
+  commission: number;
+  categoryName: string;
+}
+
+/**
+ * Order report API response structure
+ */
+export interface OrderReportResponse {
+  rCode: string;
+  rMessage: string;
+  data?: OrderReportData[];
+}
