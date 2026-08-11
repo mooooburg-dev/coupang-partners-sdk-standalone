@@ -548,8 +548,8 @@ npm run prepublishOnly
 ## 📞 지원
 
 - 🐛 버그 리포트: [GitHub Issues](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues)
-- 💡 기능 요청: [GitHub Discussions](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/discussions)
-- 📧 문의: mooooburg.dev@gmail.com
+- 💡 기능 요청: [GitHub Issues](https://github.com/mooooburg-dev/coupang-partners-sdk-standalone/issues/new)
+- 📧 문의: jeongmupark@gmail.com
 
 ## 📜 라이선스
 
