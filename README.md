@@ -6,6 +6,9 @@
 
 쿠팡 파트너스 API를 쉽게 사용할 수 있도록 도와주는 TypeScript/JavaScript SDK입니다.
 
+> 🧪 **코드 없이 먼저 테스트**하고 싶다면 → [Test Console 데모](https://cp-sdk-console.vercel.app)
+> 📝 **연동 방법 & 개발 후기** → [쿠팡 파트너스 API 연동기 (블로그)](https://dev.drawyourmind.com/posts/coupang-partners-api-sdk/)
+
 ## ✨ 특징
 
 - 🔐 **자동 인증**: HMAC SHA256 CEA 서명 자동 생성
@@ -558,6 +561,8 @@ npm run prepublishOnly
   <p>Made with ❤️ by mooooburg-dev</p>
   <p>
     <a href="https://github.com/mooooburg-dev/coupang-partners-sdk-standalone">⭐ Star on GitHub</a> |
-    <a href="https://www.npmjs.com/package/coupang-partners-sdk-standalone">📦 NPM Package</a>
+    <a href="https://www.npmjs.com/package/coupang-partners-sdk-standalone">📦 NPM Package</a> |
+    <a href="https://cp-sdk-console.vercel.app">🧪 Test Console</a> |
+    <a href="https://dev.drawyourmind.com/posts/coupang-partners-api-sdk/">📝 Blog</a>
   </p>
 </div>
