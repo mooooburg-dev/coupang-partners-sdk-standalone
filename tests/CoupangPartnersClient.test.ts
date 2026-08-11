@@ -2,7 +2,6 @@ import { CoupangPartnersClient } from '../src/CoupangPartnersClient';
 
 // Mock dependencies
 jest.mock('../src/api/ProductsAPI');
-jest.mock('node-fetch');
 
 describe('CoupangPartnersClient', () => {
   const mockCredentials = {

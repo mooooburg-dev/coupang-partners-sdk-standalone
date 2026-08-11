@@ -494,6 +494,11 @@ npm run prepublishOnly
 
 ## 🔄 버전 히스토리
 
+### v1.3.1
+
+- 🐛 Cloudflare Workers 등 엣지 런타임에서 `deeplink()` 등 API 호출 시 발생하던 `Expected signal to be an instanceof AbortSignal` 에러 수정
+- ⚡ 런타임에 네이티브 `fetch` / `AbortController`가 있으면(Node.js 18+, Cloudflare Workers, Deno, Bun 등) 이를 우선 사용하고, 없을 때만 `node-fetch` / `abort-controller`로 폴백 (별도 shim 불필요)
+
 ### v1.3.0
 
 - ✨ 리포트 API 4종 추가 (클릭/주문/수익/취소)

@@ -1,7 +1,37 @@
-import fetch from 'node-fetch';
-import AbortController from 'abort-controller';
 import { CoupangAuth } from '../auth/CoupangAuth';
 import { logger } from '../utils/Logger';
+
+/**
+ * Resolve the fetch implementation for the current runtime.
+ *
+ * Prefer the native global `fetch` (available in Node.js 18+, Cloudflare
+ * Workers, Deno, Bun and other edge runtimes) and fall back to `node-fetch`
+ * only when it is missing (e.g. Node.js 16). Using the native implementation
+ * avoids the `Expected signal to be an instanceof AbortSignal` error that
+ * occurs on edge runtimes when a `node-fetch` request is given a signal from
+ * a different `AbortController` implementation.
+ */
+async function resolveFetch(): Promise<typeof fetch> {
+  if (typeof globalThis.fetch === 'function') {
+    return globalThis.fetch.bind(globalThis);
+  }
+  const mod = await import('node-fetch');
+  return (mod.default ?? mod) as unknown as typeof fetch;
+}
+
+/**
+ * Resolve the AbortController implementation for the current runtime.
+ *
+ * Prefer the native global so that the created signal is an instance of the
+ * runtime's own `AbortSignal`, which the native `fetch`/`Request` expects.
+ */
+async function resolveAbortController(): Promise<typeof AbortController> {
+  if (typeof globalThis.AbortController === 'function') {
+    return globalThis.AbortController;
+  }
+  const mod = await import('abort-controller');
+  return ((mod as any).default ?? (mod as any).AbortController) as typeof AbortController;
+}
 
 /**
  * Base API class with common functionality
@@ -41,7 +71,12 @@ export abstract class BaseAPI {
     logger.debug(`Making ${method} request to: ${fullPath}`);
 
     try {
-      const controller = new AbortController();
+      const [fetchImpl, AbortControllerImpl] = await Promise.all([
+        resolveFetch(),
+        resolveAbortController(),
+      ]);
+
+      const controller = new AbortControllerImpl();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const fetchOptions: any = {
@@ -58,7 +93,7 @@ export abstract class BaseAPI {
         fetchOptions.body = JSON.stringify(body);
       }
 
-      const response = await fetch(url.toString(), fetchOptions);
+      const response = await fetchImpl(url.toString(), fetchOptions);
 
       clearTimeout(timeoutId);
 

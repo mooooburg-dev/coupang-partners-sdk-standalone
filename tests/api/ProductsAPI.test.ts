@@ -2,9 +2,9 @@ import { ProductsAPI } from '../../src/api/ProductsAPI';
 import { CoupangAuth } from '../../src/auth/CoupangAuth';
 import { GoldBoxResponse } from '../../src/types/Product';
 
-// Mock node-fetch
-jest.mock('node-fetch');
-const mockFetch = require('node-fetch') as jest.MockedFunction<typeof fetch>;
+// Mock the native global fetch (used by BaseAPI on Node 18+ / edge runtimes)
+const mockFetch = jest.fn();
+global.fetch = mockFetch as unknown as typeof fetch;
 
 describe('ProductsAPI', () => {
   let productsAPI: ProductsAPI;
